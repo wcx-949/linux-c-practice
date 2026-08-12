@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 700
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,7 +66,9 @@ int main(void) {
         }
 
         fflush(stdout);
-        usleep(50000);
+
+        struct timespec delay = {0, 50 * 1000 * 1000};
+        nanosleep(&delay, NULL);
     }
 
     return 0;
