@@ -29,7 +29,7 @@ public class lian_main99{
 //      找零
         if(amount>180){
             System.out.println("找零: "+(amount-180)+"元");
-            System.out.println("请收好找零");
+            System.out.println("请收好找零,谢谢");
             System.out.println("金额刚好,请取票");
         }
     }
