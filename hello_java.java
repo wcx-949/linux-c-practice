@@ -10,6 +10,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -51,43 +54,27 @@ public class hello_java extends JPanel implements ActionListener {
                 handleKey(e.getKeyCode());
             }
         });
-        registerKeyBindings();
         chooseDifficulty();
         startGame();
     }
 
-    private void registerKeyBindings() {
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "up");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "down");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "left");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "left");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "right");
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "right");
+    private void registerKeyBindings(JComponent target) {
+        InputMap inputMap = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = target.getActionMap();
 
-        getActionMap().put("up", new AbstractAction() {
+        bindKey(inputMap, actionMap, "up", KeyEvent.VK_UP, KeyEvent.VK_W, 'U');
+        bindKey(inputMap, actionMap, "down", KeyEvent.VK_DOWN, KeyEvent.VK_S, 'D');
+        bindKey(inputMap, actionMap, "left", KeyEvent.VK_LEFT, KeyEvent.VK_A, 'L');
+        bindKey(inputMap, actionMap, "right", KeyEvent.VK_RIGHT, KeyEvent.VK_D, 'R');
+    }
+
+    private void bindKey(InputMap inputMap, ActionMap actionMap, String keyName, int key1, int key2, char dir) {
+        inputMap.put(KeyStroke.getKeyStroke(key1, 0), keyName);
+        inputMap.put(KeyStroke.getKeyStroke(key2, 0), keyName);
+        actionMap.put(keyName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleKey(KeyEvent.VK_UP);
-            }
-        });
-        getActionMap().put("down", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleKey(KeyEvent.VK_DOWN);
-            }
-        });
-        getActionMap().put("left", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleKey(KeyEvent.VK_LEFT);
-            }
-        });
-        getActionMap().put("right", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleKey(KeyEvent.VK_RIGHT);
+                setDirection(dir);
             }
         });
     }
@@ -318,6 +305,10 @@ public class hello_java extends JPanel implements ActionListener {
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setResizable(false);
+            frame.setFocusable(true);
+            frame.getRootPane().setFocusable(true);
+            frame.getRootPane().setFocusTraversalKeysEnabled(false);
+            game.registerKeyBindings(frame.getRootPane());
             frame.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
@@ -325,6 +316,8 @@ public class hello_java extends JPanel implements ActionListener {
                 }
             });
             frame.setVisible(true);
+            frame.toFront();
+            frame.requestFocus();
             game.grabFocusForGame();
             frame.getRootPane().requestFocusInWindow();
         });
