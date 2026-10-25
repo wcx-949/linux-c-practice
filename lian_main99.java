@@ -27,10 +27,10 @@ public class lian_main99{
         System.out.println("**       票价:180元       **");
         System.out.println("****************************");
 //      找零
+        System.out.println("金额刚好,请取票");
         if(amount>180){
             System.out.println("找零: "+(amount-180)+"元");
             System.out.println("请收好找零,谢谢`");
-            System.out.println("金额刚好,请取票");
         }
     }
 }
